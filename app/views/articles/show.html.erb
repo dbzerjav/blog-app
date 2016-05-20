@@ -1,0 +1,57 @@
+<h2 align="center">Title: <%= @article.title %></h2>
+<div class="well col-xs-8 col-xs-offset-2">
+  <% if @article.user %>
+    <ul class="listing">
+      <div class="row center">
+        <div class="col-md-4 col-md-offset-4">
+          <li>Created by:</li>
+          <li><%= link_to gravatar_for(@article.user), user_path(@article.user) %></li>
+          <li class="article-title">
+            <%= link_to @article.user.username, user_path(@article.user) %>
+          </li>
+          <li><small>
+            <%= pluralize(@article.user.articles.count, "article") if @article.user.articles %>
+          </small></li>
+        </div>
+      </div>
+    </ul>
+  <% end %>
+  <h4 class="center description"><strong>Description:</strong></h4>
+  <hr>
+  <%= simple_format(@article.description) %>
+  <% if @article.categories.any? %>
+   <p>Categories: <%= render @article.categories %></p>
+  <% end %>
+  <div class="pull-right">
+    <% if logged_in? && (current_user == @article.user || current_user.admin?) %>
+      <%= link_to "Edit this article", edit_article_path(@article), class: "btn btn-xs btn-primary" %>
+      <%= link_to"Delete this article", article_path(@article), method: :delete, data: {confirm: "Are you sure you want to delete the article?"}, class: "btn btn-xs btn-danger" %>
+    <% end %>
+    <%= link_to "View all articles", articles_path, class: "btn btn-xs btn-success" %>
+  </div>
+  <div>
+    <div>
+      <br>
+      <%= link_to "Add Comment", new_article_comment_path(@article), class: "btn btn-xs btn-info" if logged_in? %>
+      <hr>
+    </div>
+    <% if @article.comments.any? %>
+      <div align="center">
+        <%= will_paginate @comments %>
+      </div>
+      <p>Comments: </p>
+      <%= render :partial => 'comments/comment', :collection => @comments %>
+      <div align="center">
+        <%= will_paginate @comments %>
+      </div>
+    <% end %>
+  </div>
+  <div class="article-actions">
+    <% if @article.comments.count >= 3 %>
+      <%= link_to "Add Comment", new_article_comment_path(@article), class: "btn btn-xs btn-info" if logged_in? %>
+      <div class="pull-right">
+        <%= link_to "View all articles", articles_path, class: "btn btn-xs btn-success" %>
+      </div>
+    <% end %>
+  </div>
+</div>
