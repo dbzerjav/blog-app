@@ -1,0 +1,50 @@
+<div>
+  <h1 align="center">Welcome to <%= @user.username %>'s articles page</h1>
+  <div class="row">
+      <div class="col-md-4 col-md-offset-4 center">
+          <%= gravatar_for @user, size: 150 %>
+      </div>
+  </div>
+  <h4 align="center"><%= @user.username %>'s articles</h4>
+  <div class="center">
+      <%= will_paginate @user_articles %>
+  </div>
+  <%= render 'articles/article', obj: @user.articles %>
+  <div class="center">
+      <%= will_paginate @user_articles %>
+  </div>
+  <div class="row">
+    <div class="col-xs-8 col-xs-offset-2">
+      <div class="well well-lg">
+        <% unless current_user.blocked_users.find_by(user_id: current_user.id, blocked_id: @user.id) == @user.id %>
+          <% if current_user != @user and logged_in? %>
+            <% if current_user.friendships.exists?(user_id: current_user.id, friend_id: @user.id) %>
+              <% if Friendship.find_by(user_id: current_user.id, friend_id: @user.id).approved? %>
+                <%= link_to "Unfriend", friendship_path(Friendship.find_by(user_id: current_user.id, friend_id: @user.id)), 
+                                      :method => :delete, data: { confirm: 'Are you sure?' }, 
+                                      class: "btn btn-xs btn-danger" %>
+              <% else %>
+                <%= link_to "Cancel Request", friendship_path(Friendship.find_by(user_id: current_user.id, friend_id: @user.id)), 
+                                      :method => :delete, data: { confirm: 'Are you sure you want to cancel this friend request?' }, 
+                                      class: "btn btn-xs btn-warning" %>
+              <% end %>
+            <% elsif @user.friendships.exists?(user_id: @user.id, friend_id: current_user.id) %>
+              <% if Friendship.find_by(friend_id: current_user.id).approved? %>
+                <%= link_to "Unfriend", friendship_path(Friendship.find_by(user_id: @user.id, friend_id: current_user.id)), 
+                                      :method => :delete, data: { confirm: 'Are you sure?' }, 
+                                      class: "btn btn-xs btn-danger" %>
+              <% else %> 
+                <%= link_to "Ignore Request", friendship_path(Friendship.find_by(user_id: @user.id, friend_id: current_user.id)), 
+                                      :method => :delete, data: { confirm: 'Are you sure you want to cancel this friend request?' }, 
+                                      class: "btn btn-xs btn-warning" %>
+                <%= link_to "Accept Request", friendship_path(Friendship.find_by(user_id: @user.id, friend_id: current_user.id), :approved => true), :method => :put, class: "btn btn-xs btn-primary" %>
+              <% end %>
+            <% else %>
+              <%= link_to "Add Friend", friendships_path(friend_id: @user.id, user_id: current_user.id), :method => :post, class: "btn btn-xs btn-success" %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

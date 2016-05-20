@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @blocked_user.user_id %>
+</p>
+
+<p>
+  <strong>Blocked:</strong>
+  <%= @blocked_user.blocked_id %>
+</p>
+
+<p>
+  <strong>Blocked username:</strong>
+  <%= @blocked_user.blocked_username %>
+</p>
+
+<%= link_to 'Edit', edit_blocked_user_path(@blocked_user) %> |
+<%= link_to 'Back', blocked_users_path %>
