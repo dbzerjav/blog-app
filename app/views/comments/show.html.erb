@@ -20,5 +20,5 @@
   <%= @comment.user %>
 </p>
 
-<%= link_to 'Edit', edit_comment_path(@comment) %> |
-<%= link_to 'Back', comments_path %>
+<%= link_to 'Edit', edit_article_comment_path(params[:article_id], params[:id]) %> |
+<%= link_to 'Back', article_comments_path %>

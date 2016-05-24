@@ -1,17 +1,21 @@
 Rails.application.routes.draw do
-  resources :blocked_users
-  resources :friendships
-  resources :comments
-  get 'pages/home'
 
   get 'pages/about'
 
+  
+  resources :articles do
+    resources :comments
+    get 'admin_comments', to: "comments#admin_index"
+  end
+  
+  resources :blocked_users
+  resources :friendships
   resources :categories
-  resources :articles
-devise_for :users
-scope "/accounts" do
-  resources :users
-end
+  
+  devise_for :users, :controllers => { :registrations => "user/registrations" }
+  scope "/accounts" do
+    resources :users
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
